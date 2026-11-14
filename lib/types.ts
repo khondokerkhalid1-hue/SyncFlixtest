@@ -1,0 +1,30 @@
+export type Room = {
+  id: string
+  code: string
+  name: string
+  description: string
+  is_public: boolean
+  host_id: string
+  max_members: number
+  allow_member_control: boolean
+  created_at: string
+}
+
+export type Member = {
+  user_id: string
+  joined_at: string
+  username: string
+  avatar_color: string
+  is_host: boolean
+  online: boolean
+}
+
+export type ExploreRoom = {
+  id: string
+  code: string
+  name: string
+  description: string
+  max_members: number
+  member_count: number
+  host_username: string
+}
