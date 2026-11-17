@@ -340,7 +340,7 @@ export default function SyncPlayer({ roomId, canControl, userId }: { roomId: str
           <button type="submit" className={primaryBtn}>Set video</button>
           <p className="text-xs text-muted">
             Use a direct link to a video file (.mp4 or .webm) that you have the right to use. YouTube, Netflix and other streaming
-            sites do not work here.
+            sites do not work here. For a Google Drive video, create a link in My videos and paste its video file link.
           </p>
         </form>
       )}

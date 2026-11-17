@@ -35,6 +35,7 @@ function DashboardView() {
         <Link href="/rooms/new" className={primaryBtn}>Create a room</Link>
         <Link href="/rooms" className={outlineBtn}>Explore public rooms</Link>
         <Link href="/join" className={outlineBtn}>Join with a code</Link>
+        <Link href="/drive" className={outlineBtn}>My video links</Link>
       </div>
 
       <h2 className="mt-12 text-xl font-bold">Your rooms</h2>

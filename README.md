@@ -19,6 +19,19 @@ A watch-party web app. Friends open a room, add a direct video link, and everyon
 
 Only the publishable (or anon) key is used. Never put a secret or service_role key in this project.
 
+## Google Drive video links (optional)
+
+Open "My videos" in the app. Two ways to turn a Google Drive video into a SyncFlix link:
+
+1. Paste a link to a video shared as "Anyone with the link". The server checks it with the Google Drive API (API key).
+2. Connect Google Drive (OAuth, `drive.file` permission only) and pick a video with Google Picker.
+
+Each link has a random secret address. `/watch/<token>` is a watch page. `/api/v/<token>/stream` serves the real video bytes with HTTP Range support (this is the address to paste into a room). Deleting a link stops it at once and never touches the file in Drive.
+
+Setup: run `supabase/migrations/part7_drive_links.sql` in Supabase, then fill in the server settings listed in `.env.example`. Secrets (service role key, Google client secret, API key, encryption key) belong only in server settings such as Vercel environment variables, never in `NEXT_PUBLIC_` variables.
+
+Honest limits: Google Drive is not a video CDN. Google can throttle popular files ("too many views"), and every viewer's video passes through the server, so hosting plan bandwidth applies. Only MP4 and WebM files are accepted, and whether a given MP4 plays depends on the browser's codec support.
+
 ## What is not included
 
 Photo avatars, account deletion, chat moderation, queue reordering, voice chat, friends, direct messages, video uploads. Only direct https video links (.mp4, .webm) are supported. Protected or streaming sites will not work.

@@ -28,3 +28,16 @@ export type ExploreRoom = {
   member_count: number
   host_username: string
 }
+
+export type DriveLinkRow = {
+  id: string
+  token: string
+  source: 'public_link' | 'oauth'
+  title: string
+  mime_type: string
+  size_bytes: number
+  thumbnail_url: string | null
+  status: 'active' | 'revoked'
+  last_error: string | null
+  created_at: string
+}
