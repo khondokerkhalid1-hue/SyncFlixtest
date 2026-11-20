@@ -3,7 +3,8 @@ export class AppError extends Error {
     public status: number,
     public code: string,
     message: string,
-    public retryAfter?: number
+    public retryAfter?: number,
+    public detail?: string
   ) {
     super(message)
   }
@@ -16,7 +17,7 @@ const noStore = { 'Cache-Control': 'no-store' }
 export function errorResponse(e: AppError): Response {
   const headers: Record<string, string> = { ...noStore }
   if (e.retryAfter) headers['Retry-After'] = String(e.retryAfter)
-  return Response.json({ error: { code: e.code, message: e.message } }, { status: e.status, headers })
+  return Response.json({ error: { code: e.code, message: e.message, ...(e.detail ? { detail: e.detail } : {}) } }, { status: e.status, headers })
 }
 
 // Turns any thrown value into a safe response. Details of unexpected errors never reach the browser.

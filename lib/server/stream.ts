@@ -77,7 +77,7 @@ export async function handleStream(req: Request, token: string, deps: StreamDeps
     return new Response(upstream.body, { status, headers })
   } catch (e) {
     if (req.signal.aborted) return new Response(null, { status: 499 })
-    if (e instanceof AppError && link && sticky.includes(e.code)) await deps.store.markLinkError(link.id, e.code).catch(() => {})
+    if (e instanceof AppError && link && sticky.includes(e.code)) await deps.store.markLinkError(link.id, e.detail ? `${e.code}:${e.detail}` : e.code).catch(() => {})
     return jsonError(e)
   }
 }

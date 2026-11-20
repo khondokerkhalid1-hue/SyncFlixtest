@@ -1,6 +1,7 @@
 import Logo from './Logo'
 
 const links = [
+  { href: '/reviews', label: 'Community reviews' },
   { href: '#how-it-works', label: 'How it works' },
   { href: '#features', label: 'Features' },
   { href: '#preview', label: 'Preview' },

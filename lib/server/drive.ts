@@ -67,10 +67,14 @@ async function call(
 
 async function mapError(res: Response, auth: DriveAuth): Promise<AppError> {
   let reason = ''
+  let googleMessage = ''
   try {
     const j = await res.json()
     reason = String(j?.error?.errors?.[0]?.reason ?? j?.error?.status ?? '')
+    googleMessage = String(j?.error?.message ?? '')
   } catch {}
+  // Google's own words help to find the real cause. Anything that looks like an API key is removed first.
+  const detail = [reason, googleMessage].filter(Boolean).join(': ').replace(/AIza[0-9A-Za-z_-]{20,}/g, '[key]').slice(0, 200) || undefined
   const notShared =
     auth.kind === 'key'
       ? 'The file was not found. It may be private, deleted, or not shared with "Anyone with the link".'
@@ -95,13 +99,13 @@ async function mapError(res: Response, auth: DriveAuth): Promise<AppError> {
       return new AppError(403, 'download_disabled', 'The owner turned off downloading for this file, so it cannot be streamed.')
     }
     if (reason === 'cannotDownloadAbusiveFile') {
-      return new AppError(403, 'blocked', 'Google has blocked downloads of this file.')
+      return new AppError(403, 'blocked', 'Google has blocked downloads of this file. Google does this for files it has flagged, for example as malware, spam or copyright-protected.', undefined, detail)
     }
     return new AppError(403, 'forbidden', auth.kind === 'key'
-      ? 'Google Drive refused access. The file must be shared with "Anyone with the link".'
-      : 'Google Drive refused access. Pick the file again with Google Drive.')
+      ? 'Google Drive refused access. SyncFlix reads the file like a stranger would, so your own owner or editor access does not count. The file must be shared as "Anyone with the link" (Viewer or higher), downloading must be allowed, and Google must not have flagged the file.'
+      : 'Google Drive refused access. Pick the file again with Google Drive.', undefined, detail)
   }
-  return new AppError(502, 'upstream', 'Google Drive returned an unexpected answer. Try again later.')
+  return new AppError(502, 'upstream', 'Google Drive returned an unexpected answer. Try again later.', undefined, detail)
 }
 
 const FIELDS =

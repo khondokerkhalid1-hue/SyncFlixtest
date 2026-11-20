@@ -39,6 +39,20 @@ export interface Store {
   updateAccessToken(userId: string, enc: string, expiresAt: string): Promise<void>
   deleteConnection(userId: string): Promise<void>
   hitRateLimit(key: string, max: number, windowSeconds: number): Promise<boolean>
+  createReviewTitle(input: ReviewTitleInput): Promise<{ id: string; created: boolean }>
+  refreshReviewTitle(input: Omit<ReviewTitleInput, 'userId' | 'category'>): Promise<void>
+}
+
+export type ReviewTitleInput = {
+  userId: string
+  providerId: number
+  mediaType: 'movie' | 'tv'
+  category: 'movie' | 'tv_series' | 'anime'
+  title: string
+  posterPath: string | null
+  backdropPath: string | null
+  releaseDate: string | null
+  overview: string | null
 }
 
 let admin: SupabaseClient | null = null
@@ -94,6 +108,21 @@ export function supabaseStore(): Store {
     async deleteConnection(userId) {
       const { error } = await db.from('drive_connections').delete().eq('user_id', userId)
       if (error) throw dbError(error)
+    },
+    async createReviewTitle(i) {
+      const { data, error } = await db.rpc('create_review_title', {
+        p_user: i.userId, p_provider_id: i.providerId, p_media_type: i.mediaType, p_category: i.category, p_title: i.title,
+        p_poster: i.posterPath, p_backdrop: i.backdropPath, p_release: i.releaseDate, p_overview: i.overview,
+      })
+      const row = Array.isArray(data) ? data[0] : data
+      if (error || !row) throw dbError(error ?? { message: 'no row returned' })
+      return { id: String(row.id), created: row.created === true }
+    },
+    async refreshReviewTitle(i) {
+      await db.rpc('refresh_review_title', {
+        p_media_type: i.mediaType, p_provider_id: i.providerId, p_title: i.title, p_poster: i.posterPath,
+        p_backdrop: i.backdropPath, p_release: i.releaseDate, p_overview: i.overview,
+      })
     },
     async hitRateLimit(key, max, windowSeconds) {
       const { data, error } = await db.rpc('hit_rate_limit', { p_key: key, p_limit: max, p_window_seconds: windowSeconds })

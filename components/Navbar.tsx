@@ -6,6 +6,7 @@ import Logo from './Logo'
 import { useAuth } from './AuthProvider'
 
 const links = [
+  { href: '/reviews', label: 'Reviews' },
   { href: '#how-it-works', label: 'How it works' },
   { href: '#features', label: 'Features' },
   { href: '#preview', label: 'Preview' },

@@ -13,7 +13,7 @@ type Created = { title: string; watch_path: string; stream_path: string }
 
 const problemText: Record<string, string> = {
   file_not_found: 'The file was deleted, moved, or is no longer shared.',
-  forbidden: 'Google Drive refused access to this file.',
+  forbidden: 'Google Drive refused access. SyncFlix reads the file like a stranger, so your own editor access does not count: share it as "Anyone with the link", allow downloads, and make sure Google has not flagged it.',
   download_disabled: 'The owner turned off downloading for this file.',
   reconnect_required: 'Google Drive access ended. Connect Google Drive again.',
   blocked: 'Google has blocked downloads of this file.',
@@ -224,7 +224,12 @@ function DriveView() {
                 <p className="mt-1 text-xs text-muted">
                   {formatBytes(l.size_bytes)}, {new Date(l.created_at).toLocaleDateString()}, {l.source === 'oauth' ? 'connected Drive' : 'pasted link'}
                 </p>
-                {l.last_error && <p className="mt-1 text-xs text-red-300">{problemText[l.last_error] ?? 'This link had a problem.'}</p>}
+                {l.last_error && (
+                  <p className="mt-1 text-xs text-red-300">
+                    {problemText[l.last_error.split(':')[0]] ?? 'This link had a problem.'}
+                    {l.last_error.includes(':') && <span className="text-muted"> Google said: {l.last_error.slice(l.last_error.indexOf(':') + 1)}</span>}
+                  </p>
+                )}
                 <div className="mt-3 flex flex-wrap gap-2">
                   <button onClick={() => copy(`/api/v/${l.token}/stream`, 'file')} className={`${outlineBtn} !px-3 !py-1.5 !text-xs`}>
                     {copied === `file/api/v/${l.token}/stream` ? 'Copied' : 'Copy video file link'}

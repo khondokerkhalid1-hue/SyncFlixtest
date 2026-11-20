@@ -13,6 +13,8 @@ const nav = [
   { href: '/rooms', label: 'Explore rooms' },
   { href: '/rooms/new', label: 'Create room' },
   { href: '/join', label: 'Join with code' },
+  { href: '/reviews', label: 'Reviews' },
+  { href: '/my-reviews', label: 'My reviews' },
   { href: '/drive', label: 'My videos' },
   { href: '/profile', label: 'Profile' },
   { href: '/settings', label: 'Settings' },

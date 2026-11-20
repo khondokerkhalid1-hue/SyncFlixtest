@@ -6,6 +6,7 @@ const onVercel = Boolean(process.env.VERCEL)
 export const driveApiBase = () => (!onVercel && process.env.GOOGLE_DRIVE_API_BASE) || 'https://www.googleapis.com/drive/v3'
 export const oauthTokenUrl = () => (!onVercel && process.env.GOOGLE_OAUTH_TOKEN_URL) || 'https://oauth2.googleapis.com/token'
 export const oauthRevokeUrl = () => (!onVercel && process.env.GOOGLE_OAUTH_REVOKE_URL) || 'https://oauth2.googleapis.com/revoke'
+export const tmdbApiBase = () => (!onVercel && process.env.TMDB_API_BASE) || 'https://api.themoviedb.org/3'
 export const oauthAuthUrl = () => 'https://accounts.google.com/o/oauth2/v2/auth'
 
 export const siteUrl = () => (process.env.SITE_URL || '').replace(/\/+$/, '')

@@ -28,7 +28,8 @@ export default function WatchPlayer({ token }: { token: string }) {
     try {
       const r = await fetch(`/api/v/${token}/info?check=1`)
       const j = await r.json()
-      setProblem(r.ok ? (j.note ?? 'The video could not be played.') : (j?.error?.message ?? 'The video could not be played.'))
+      const detail = j?.error?.detail ? ` (Google said: ${j.error.detail})` : ''
+      setProblem(r.ok ? (j.note ?? 'The video could not be played.') : (j?.error?.message ?? 'The video could not be played.') + detail)
     } catch {
       setProblem('The video could not be played. Check your connection.')
     }

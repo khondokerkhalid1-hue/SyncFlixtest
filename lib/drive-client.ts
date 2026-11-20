@@ -16,7 +16,10 @@ export async function api<T>(path: string, init: { method?: string; body?: unkno
     body: init.body ? JSON.stringify(init.body) : undefined,
   })
   const json = await res.json().catch(() => null)
-  if (!res.ok) throw new ApiFailure(json?.error?.message ?? 'Something went wrong. Please try again.', json?.error?.code)
+  if (!res.ok) {
+    const detail = json?.error?.detail ? ` (Google said: ${json.error.detail})` : ''
+    throw new ApiFailure((json?.error?.message ?? 'Something went wrong. Please try again.') + detail, json?.error?.code)
+  }
   return json as T
 }
 
